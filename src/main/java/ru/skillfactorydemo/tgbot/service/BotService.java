@@ -30,14 +30,18 @@ public class BotService extends TelegramLongPollingBot {
     private static final String CURRENT_RATES = "/currentrates";
     private static final String ADD_INCOME = "/addincome";
     private static final String ADD_SPEND = "/addspend";
+
     private final CentralRussianBankService centralRussianBankService;
     private final FinanceService financeService;
     private final ActiveChatRepository activeChatRepository;
-    @Value("${bot.api.key}") //Сюда будет вставлено значение из application.properties, в котором будет указан api key, полученный от BotFather
+
+    @Value("${bot.api.key}")
+    //Сюда будет вставлено значение из application.properties, в котором будет указан api key, полученный от BotFather
     private String apiKey;
 
     @Value("${bot.name}") //Как будут звать нашего бота
     private String name;
+
     //Это основной метод, который связан с обработкой сообщений
     @Override
     public void onUpdateReceived(Update update) {
@@ -69,6 +73,7 @@ public class BotService extends TelegramLongPollingBot {
             log.error("Возникла неизвестная проблема, сообщите пожалуйста администратору", e);
         }
     }
+
     public void sendNotificationToAllActiveChats(String message, Set<Long> chatIds) {
         for (Long id : chatIds) {
             SendMessage sendMessage = new SendMessage();
@@ -77,26 +82,29 @@ public class BotService extends TelegramLongPollingBot {
             try {
                 execute(sendMessage);
             } catch (TelegramApiException e) {
-                e.printStackTrace();
+                log.error("Не удалось отправить сообщение", e);
             }
         }
     }
+
     //Данный метод будет вызван сразу после того, как данный бин будет создан - это обеспечено аннотацией Spring PostConstruct
     @PostConstruct
     public void start() {
         log.info("username: {}, token: {}", name, apiKey);
     }
 
-    //Данный метод просто возвращает данные о имени бота и его необходимо переопределять
+    //Данный метод просто возвращает данные об имени бота и его необходимо переопределять
     @Override
     public String getBotUsername() {
         return name;
     }
+
     //Данный метод возвращает API ключ для взаимодействия с Telegram
     @Override
     public String getBotToken() {
         return apiKey;
     }
+
     private Map<Long, List<String>> previousCommands = new ConcurrentHashMap<>();
 
     private void putPreviousCommand(Long chatId, String command) {

@@ -1,0 +1,1 @@
+INSERT INTO  incomes (ID, CHAT_ID, income, DT) VALUES (12345, 2, 3000, '20-12-2022');

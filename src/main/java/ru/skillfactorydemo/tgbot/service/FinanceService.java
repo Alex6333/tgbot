@@ -8,6 +8,9 @@ import ru.skillfactorydemo.tgbot.repository.IncomeRepository;
 import ru.skillfactorydemo.tgbot.repository.SpendRepository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,15 +28,35 @@ public class FinanceService {
             Income income = new Income();
             income.setChatId(chatId);
             income.setIncome(new BigDecimal(price));
+            income.setDt(new Date());
             incomeRepository.save(income);
             message = "Доход в размере " + price + " был успешно добавлен";
         } else {
             Spend spend = new Spend();
             spend.setChatId(chatId);
             spend.setSpend(new BigDecimal(price));
+            spend.setDt(new Date());
             spendRepository.save(spend);
             message = "Расход в размере " + price + " был успешно добавлен";
         }
         return message;
     }
+
+    /*public String spendAndIncomeList(String operationType, String price, Long chatId){
+        List<String> spendAndIncome = new ArrayList<>();
+        if (ADD_INCOME.equalsIgnoreCase(operationType)) {
+            Income income = new Income();
+            income.setChatId(chatId);
+            income.setIncome(new BigDecimal(price));
+            income.setDt(new Date());
+            spendAndIncome.add(String.valueOf(income));
+        } else {
+            Spend spend = new Spend();
+            spend.setChatId(chatId);
+            spend.setSpend(new BigDecimal(price));
+            spend.setDt(new Date());
+            spendAndIncome.add(String.valueOf(spend));
+        }
+        return spendAndIncome.;
+    }*/
 }
